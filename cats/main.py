@@ -14,7 +14,7 @@ import random
 
 
 ###########
-# Phase 1 #
+# === Text filtering & selection ===
 ###########
 
 
@@ -36,14 +36,12 @@ def pick(paragraphs, select, k):
     >>> pick(ps, s, 2)
     ''
     """
-    # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
+
     filter = [p for p in paragraphs if select(p)]
     if k < len(filter):
         return filter[k]
     return ''
 
-    # END PROBLEM 1
 
 
 def about(subject):
@@ -61,8 +59,6 @@ def about(subject):
     """
     assert all([lower(x) == x for x in subject]), "subjects should be lowercase."
 
-    # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
     def selcet(paragraphs):
         words = split(lower(remove_punctuation(paragraphs)))
         for word in words:
@@ -70,7 +66,7 @@ def about(subject):
                 return True
         return False
     return selcet
-    # END PROBLEM 2
+
 
 
 def accuracy(typed, source):
@@ -98,8 +94,7 @@ def accuracy(typed, source):
     """
     typed_words = split(typed)
     source_words = split(source)
-    # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***" 
+    
     if len(typed_words) == 0 and len(source_words) == 0:
         return 100.0
     elif len(typed_words) == 0:
@@ -110,7 +105,7 @@ def accuracy(typed, source):
             count += 1
     return count / len(typed_words) * 100
 
-    # END PROBLEM 3
+
 
 
 def wpm(typed, elapsed):
@@ -126,15 +121,13 @@ def wpm(typed, elapsed):
     2.0
     """
     assert elapsed > 0, "Elapsed time must be positive"
-    # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
     
     return len(typed) / 5 * (60 / elapsed)
-    # END PROBLEM 4
+
 
 
 ################
-# Phase 4 (EC) #
+# === (Optional) Memoization extensions ===
 ################
 
 
@@ -156,18 +149,13 @@ def memo(f):
 def memo_diff(diff_function):
     """A memoization function."""
     cache = {}
-
     def memoized(typed, source, limit):
-        # BEGIN PROBLEM EC
-        "*** YOUR CODE HERE ***"
         return min(limit + 1, abs(len(typed) - len(source)))
-        # END PROBLEM EC
-
     return memoized
 
 
 ###########
-# Phase 2 #
+# === Autocorrection logic ===
 ###########
 
 
@@ -190,36 +178,18 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     >>> autocorrect("tosting", ["testing", "asking", "fasting"], first_diff, 10)
     'testing'
     """
-    # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+
     if typed_word in word_list:
         return typed_word
-    min_diff = limit + 1 #如果让min_diff = limit,后面判断会变得很麻烦，最好最开始假定的最小差值比limit大（见下面分析）
+    min_diff = limit + 1 
     close_word = typed_word
     for word in word_list:
         diff = diff_function(typed_word, word, limit)
         if diff < min_diff and diff <= limit:
-        #看似写两个条件很多余，有一个特殊情况是当limit是10，则min_diff是11
-        #如果diff也是10，判断就成了if 10<11 and 10<=10。成立。diff刚好等于limit的时候要让close_word是此时的word。
-        #所以条件要写diff <= limit（等于很关键）
-        #但是如果还有一个diff也是10，不可以让此时的word输出（优先输出前面的），就要限制条件
-        #此时min_diff因为上一轮变成10了，条件变成了 if 10 < 10 and 10<= 10，不成立，此时的word就可以顺利排除掉
-        #所以判断条件需要同时判断diff和min_diff、limit的大小关系。diff可以等于limit，不可以等于min_diff
             min_diff = diff
             close_word = word
     return close_word
-
-    # ✅ diff <= limit：
-    # 确保候选词的差值在容许范围内
-    # 必须包含等号，否则刚好等于limit的合法值会被错误排除
-
-    # ✅ diff < min_diff：
-    # 确保不覆盖最前面出现的相同diff的候选词
-    # 不允许 diff == min_diff，因为会导致后者覆盖前者（不满足“靠前优先”）
-
         
-
-    # END PROBLEM 5
 
 
 def furry_fixes(typed, source, limit):
@@ -244,7 +214,7 @@ def furry_fixes(typed, source, limit):
     >>> furry_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
     """
-    # BEGIN PROBLEM 6
+
     if limit < 0:
         return limit + 1
     if typed == "":
@@ -255,8 +225,6 @@ def furry_fixes(typed, source, limit):
         return furry_fixes(typed[1:], source[1:], limit)
     else:
         return 1 + furry_fixes(typed[1:], source[1:], limit - 1)
-  
-    # END PROBLEM 6
 
 
 def minimum_mewtations(typed, source, limit):
@@ -291,9 +259,6 @@ def minimum_mewtations(typed, source, limit):
         return min(add, remove, substitute)
         
 
-# Ignore the line below
-minimum_mewtations = count(minimum_mewtations)
-
   
 def final_diff(typed, source, limit):
     """A diff function that takes in a string TYPED, a string SOURCE, and a number LIMIT.
@@ -305,7 +270,7 @@ FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
 
 
 ###########
-# Phase 3 #
+# === Multiplayer progress & timing ===
 ###########
 
 
@@ -332,8 +297,6 @@ def report_progress(typed, source, user_id, upload):
     ID: 3 Progress: 0.2
     0.2
     """
-    # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
     correct = 0
     for i in range(len(typed)):
         if typed[i] == source[i]:
@@ -344,7 +307,6 @@ def report_progress(typed, source, user_id, upload):
     upload({'id': user_id, 'progress': progress})
     return progress
 
-    # # END PROBLEM 8
 
 
 def time_per_word(words, timestamps_per_player):
@@ -366,7 +328,6 @@ def time_per_word(words, timestamps_per_player):
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
     tpp = timestamps_per_player  # A shorter name (for convenience)
-    # BEGIN PROBLEM 9
     times = []
     for p in tpp:
         player_times = [p[i + 1] - p[i] for i in range(len(p) - 1)]
@@ -393,8 +354,7 @@ def fastest_words(words_and_times):
     """
     check_words_and_times(words_and_times)  # verify that the input is properly formed
     words, times = words_and_times['words'], words_and_times['times']
-    # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
+
     player_num = len(times)
     word_num = len(words)
     result = [[] for _ in range(player_num)]
@@ -402,7 +362,7 @@ def fastest_words(words_and_times):
         fastest_player = min(range(player_num), key = lambda player: times[player][word])
         result[fastest_player].append(words[word])
     return result
-    # END PROBLEM 10
+
 
 
 def check_words_and_times(words_and_times):
@@ -427,10 +387,8 @@ def get_time(times, player_num, word_index):
     return times[player_num][word_index]
 
 
-enable_multiplayer = False  # Change to True when you're ready to race.
-
 ##########################
-# Command Line Interface #
+# Command-line Interface #
 ##########################
 
 
