@@ -214,3 +214,36 @@ __marimo__/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# OK test framework (CS course files)
+.ok_history
+.ok_messages
+.ok_storage.*
+cats.ok
+ok/
+
+# Editor settings
+.vscode/
+.idea/
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test result files
+*.out
